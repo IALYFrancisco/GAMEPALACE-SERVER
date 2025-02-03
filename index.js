@@ -2,6 +2,7 @@ import e from 'express'
 import dotenv from 'dotenv'
 import userRouter from './src/routes/userRoutes.js'
 import { corsAuthorization } from './src/middlewares/index.js'
+import gameRouter from './src/routes/gameRoutes.js'
 
 dotenv.config()
 
@@ -17,6 +18,8 @@ app.get('/', (request, response) => {
 })
 
 app.use('/user', userRouter)
+
+app.use('/game', gameRouter)
 
 app.listen(3000, () => {
     console.log(`The server is ready to work at: ${process.env.SERVER_HOST} ✨🎉`)
