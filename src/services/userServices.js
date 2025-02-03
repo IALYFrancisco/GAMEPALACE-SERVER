@@ -48,11 +48,13 @@ export async function userLogin (request, response) {
 
     try {
         await dbConnexion()
+        console.log(request.query)
         let userLoginChecker = await userCollection.find(request.query)
-        if(userLoginChecker.length === 1){
+	console.log(userLoginChecker)
+        if(userLoginChecker.length == 1){
             response.status(200).json("User exist, he can connect 👍👍")
         }else{
-            response.status(404).json("User doesn't exist, email or password invalid 🔑⛔")
+            response.status(200).json("User doesn't exist, email or password invalid 🔑⛔")
         }
     }catch(error){
         response.status(500).json("Error on the server 💻💻")
