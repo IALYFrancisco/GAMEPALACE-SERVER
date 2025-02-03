@@ -22,10 +22,21 @@ export async function getAllUser( request, response ){
 export async function postOneUser(request, response) {
     response.set("Content-Type", "application/json")
     try {
-        let newUser = userCollection(request.body)
+        
         await dbConnexion()
-        await newUser.save()
-        response.status(201).json("User created successfully ✅✅")
+
+        let userAlreadyExist = await userCollection.find({email : request.body.email})
+
+        if(userAlreadyExist.length > 0){
+            response.json("An user with this email already exist 🙂🙂")
+        }else{
+            console.log(userAlreadyExist)
+    
+            let newUser = userCollection(request.body)
+            await newUser.save()
+            response.status(201).json("User created successfully ✅✅")
+        }
+
     }catch(error){
         response.status(500).json(`Error creating user ⛔⛔: ${error}`)
     }finally{
