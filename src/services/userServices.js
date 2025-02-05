@@ -1,6 +1,7 @@
 import { dbConnexion, dbDisconnexion } from "./dbServices.js";
 import userCollection from "../models/userModel.js"
 import { response } from "express";
+import { hashUserPassword } from "./othersServices.js";
 
 export async function getAllUser( request, response ){
     
@@ -28,8 +29,9 @@ export async function postOneUser(request, response) {
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
         if(userAlreadyExist.length > 0){
-            response.json("An user with this email already exist 🙂🙂")
+            response.status(204).end()
         }else{
+            request.body.password = await hashUserPassword(request.body.password)
             let newUser = userCollection(request.body)
             await newUser.save()
             response.status(201).json("User created successfully ✅✅")
@@ -48,13 +50,12 @@ export async function userLogin (request, response) {
 
     try {
         await dbConnexion()
-        console.log(request.query)
         let userLoginChecker = await userCollection.find(request.query)
-	console.log(userLoginChecker)
+	    console.log(userLoginChecker)
         if(userLoginChecker.length == 1){
             response.status(200).json("User exist, he can connect 👍👍")
         }else{
-            response.status(200).json("User doesn't exist, email or password invalid 🔑⛔")
+            response.status(204).json("User doesn't exist, email or password invalid 🔑⛔")
         }
     }catch(error){
         response.status(500).json("Error on the server 💻💻")
