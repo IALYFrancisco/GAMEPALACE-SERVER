@@ -7,7 +7,8 @@ export async function listOfGames(request, response) {
         await dbConnexion()
         let listOfGame = await gameCollection.find({})
         if(listOfGame.length < 1){
-            response.status(204).json()
+            response.status(204)
+            response.end()
         }else {
             response.status(200).json(listOfGame)
         }
