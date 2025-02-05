@@ -55,7 +55,7 @@ export async function userLogin (request, response) {
         if(userLoginChecker.length == 1){
             response.status(200).json("User exist, he can connect 👍👍")
         }else{
-            response.status(200).json("User doesn't exist, email or password invalid 🔑⛔")
+            response.status(204).json("User doesn't exist, email or password invalid 🔑⛔")
         }
     }catch(error){
         response.status(500).json("Error on the server 💻💻")
