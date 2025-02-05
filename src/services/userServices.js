@@ -50,9 +50,8 @@ export async function userLogin (request, response) {
 
     try {
         await dbConnexion()
-        console.log(request.query)
         let userLoginChecker = await userCollection.find(request.query)
-	console.log(userLoginChecker)
+	    console.log(userLoginChecker)
         if(userLoginChecker.length == 1){
             response.status(200).json("User exist, he can connect 👍👍")
         }else{
