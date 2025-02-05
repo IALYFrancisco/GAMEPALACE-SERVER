@@ -28,7 +28,7 @@ export async function postOneUser(request, response) {
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
         if(userAlreadyExist.length > 0){
-            response.json("An user with this email already exist 🙂🙂")
+            response.statut(200).json("An user with this email already exist 🙂🙂")
         }else{
             let newUser = userCollection(request.body)
             await newUser.save()
