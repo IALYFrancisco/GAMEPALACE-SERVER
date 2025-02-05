@@ -1,6 +1,7 @@
 import { dbConnexion, dbDisconnexion } from "./dbServices.js";
 import userCollection from "../models/userModel.js"
 import { response } from "express";
+import { hashUserPassword } from "./othersServices.js";
 
 export async function getAllUser( request, response ){
     
@@ -30,6 +31,7 @@ export async function postOneUser(request, response) {
         if(userAlreadyExist.length > 0){
             response.statut(200).json("An user with this email already exist 🙂🙂")
         }else{
+            request.body.password = await hashUserPassword(request.body.password)
             let newUser = userCollection(request.body)
             await newUser.save()
             response.status(201).json("User created successfully ✅✅")
