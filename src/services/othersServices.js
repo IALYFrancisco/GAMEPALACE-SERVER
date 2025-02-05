@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt"
 export async function hashUserPassword(string) {
+    let valueToReturn
     try {
-        await bcrypt.hash(string, 10).then((result)=> {return result})
+        valueToReturn = await bcrypt.hash(string, 10)
+        return valueToReturn
     }catch(error){
         return "Error crypting user password"
     }
