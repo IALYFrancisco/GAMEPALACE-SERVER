@@ -29,7 +29,7 @@ export async function postOneUser(request, response) {
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
         if(userAlreadyExist.length > 0){
-            response.statut(204).end()
+            response.status(204).end()
         }else{
             request.body.password = await hashUserPassword(request.body.password)
             let newUser = userCollection(request.body)
