@@ -11,6 +11,7 @@ export async function listOfGames(request, response) {
         }else {
             response.status(200).json(listOfGame)
         }
+
     }catch(error){
         response.status(500).json(`Erreur de récupération de liste des jeux ⛔⛔ : ${error}`)
     }finally{
