@@ -7,7 +7,7 @@ export async function listOfGames(request, response) {
         await dbConnexion()
         let listOfGame = await gameCollection.find({})
         if(listOfGame.length < 1){
-            response.status(200).json("No game, the collection is empty ⏺⏺")
+            response.status(204).json()
         }else {
             response.status(200).json(listOfGame)
         }
