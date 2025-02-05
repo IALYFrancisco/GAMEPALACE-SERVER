@@ -21,6 +21,7 @@ export async function getAllUser( request, response ){
 }
 
 export async function postOneUser(request, response) {
+console.log(request.body)
     response.set("Content-Type", "application/json")
     try {
         
