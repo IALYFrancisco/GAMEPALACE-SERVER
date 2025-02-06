@@ -1,7 +1,6 @@
 import { dbConnexion, dbDisconnexion } from "./dbServices.js";
 import userCollection from "../models/userModel.js"
-import { response } from "express";
-import { hashUserPassword } from "./othersServices.js";
+import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 
 export async function getAllUser( request, response ){
     
@@ -45,17 +44,13 @@ export async function postOneUser(request, response) {
 }
 
 export async function userLogin (request, response) {
-
-    response.set('Content-Type', 'application/json')
-
     try {
         await dbConnexion()
-        let userLoginChecker = await userCollection.find(request.query)
-	    console.log(userLoginChecker)
-        if(userLoginChecker.length == 1){
+        let userLoginChecker = await userCollection.find({email : request.query.email})
+        if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
             response.status(200).json("User exist, he can connect 👍👍")
         }else{
-            response.status(204).json("User doesn't exist, email or password invalid 🔑⛔")
+            response.status(204).end()
         }
     }catch(error){
         response.status(500).json("Error on the server 💻💻")

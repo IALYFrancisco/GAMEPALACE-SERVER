@@ -8,3 +8,11 @@ export async function hashUserPassword(string) {
         return "Error crypting user password"
     }
 }
+
+export async function userPasswordVerify(plainPassword, hashedPassword) {
+    try {
+        return await bcrypt.compare(plainPassword, hashedPassword)
+    }catch(error){
+        return `Error comparing user password: ${error}`
+    }
+}
