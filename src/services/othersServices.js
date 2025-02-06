@@ -13,6 +13,6 @@ export async function userPasswordVerify(plainPassword, hashedPassword) {
     try {
         return await bcrypt.compare(plainPassword, hashedPassword)
     }catch(error){
-        return "Error comparing user password"
+        return `Error comparing user password: ${error}`
     }
 }
