@@ -18,3 +18,17 @@ export async function listOfGames(request, response) {
         await dbDisconnexion()
     }
 }
+
+export async function addOneGame(request, response) {
+    response.set('Content-Type', 'application/json')
+    try {
+        await dbConnexion()
+        let newGame = gameCollection(request.body)
+        await newGame.save()
+        response.status(201).json("Resource added successfully ✅✅")
+    }catch(error){
+        response.status(500).json(`Failed to add resource, error in the serve 💻💻: ${error}`)
+    }finally{
+        dbDisconnexion()
+    }
+}
