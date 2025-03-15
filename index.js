@@ -14,6 +14,8 @@ app.use(e.json())
 
 app.use(corsAuthorization)
 
+app.use(cookieParser())
+
 app.get('/', (request, response) => {
     response.status(200).json("Welcome to GAMEPALACE server 👋🎮")
 })
