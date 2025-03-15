@@ -84,7 +84,12 @@ export async function refreshToken(request, response) {
 
 //Service en charge du déconnexion des utilisateurs
 export async function logout (request, response){
-    tokens = tokens.filter((token) => token !== request.coockies.refreshToken)
-    response.clearCookie("refreshToken");
-    response.json({message: "Logged out"})
+    try {
+        tokens = tokens.filter((token) => token !== request.cookies.refreshToken)
+        response.clearCookie("refreshToken");
+        response.json({message: "Logged out"})
+    }catch(error){
+        console.log(error)
+        response.status(500).json(error)
+    }
 }
