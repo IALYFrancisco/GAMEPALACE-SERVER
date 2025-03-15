@@ -2,6 +2,7 @@ import { dbConnexion, dbDisconnexion } from "./dbServices.js";
 import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 
+//Service de récupération de la liste de tout les utilisateurs
 export async function getAllUser( request, response ){
     
     await dbConnexion()
@@ -19,6 +20,7 @@ export async function getAllUser( request, response ){
     await dbDisconnexion()
 }
 
+//Service en charge de l'inscription des utilisateurs
 export async function postOneUser(request, response) {
     response.set("Content-Type", "application/json")
     try {
@@ -43,6 +45,8 @@ export async function postOneUser(request, response) {
     }
 }
 
+
+//Service en charge du connexion des utilisateurs
 export async function userLogin (request, response) {
     try {
         await dbConnexion()
