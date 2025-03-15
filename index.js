@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import userRouter from './src/routes/userRoutes.js'
 import { corsAuthorization } from './src/middlewares/index.js'
 import gameRouter from './src/routes/gameRoutes.js'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
