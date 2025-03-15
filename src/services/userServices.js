@@ -81,3 +81,10 @@ export async function refreshToken(request, response) {
         response.json({accessToken: newAccessToken})
     })
 }
+
+//Service en charge du déconnexion des utilisateurs
+export async function logout (request, response){
+    tokens = tokens.filter((token) => token !== request.coockies.refreshToken)
+    response.clearCookie("refreshToken");
+    response.json({message: "Logged out"})
+}
