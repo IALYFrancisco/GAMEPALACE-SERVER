@@ -45,6 +45,7 @@ export async function postOneUser(request, response) {
     }
 }
 
+var tokens = [];
 
 //Service en charge du connexion des utilisateurs
 export async function userLogin (request, response) {
