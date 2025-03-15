@@ -52,7 +52,7 @@ var tokens = [];
 export async function userLogin (request, response) {
     try {
         await dbConnexion()
-        let userLoginChecker = await userCollection.find({email : request.query.email})
+        const userLoginChecker = await userCollection.find({email : request.query.email})
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
             const accessToken = jsonwebtoken.sign({ id: userLoginChecker._id, email: userLoginChecker.email }, process.env.SECRET_KEY, {expiresIn: "15m"})
             const refreshToken = jsonwebtoken.sign({id: userLoginChecker._id, email: userLoginChecker.email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
@@ -69,4 +69,15 @@ export async function userLogin (request, response) {
     }finally{
         await dbDisconnexion()
     }
+}
+
+//Service en charge du rafraîchissement des tokens
+export async function refreshToken(request, response) {
+    const _refreshToken = request.coockies.refreshToken
+    if(!refreshToken || !tokens.includes(refreshToken)) return response.status(403).json({mesage: "L'utilisateur n'est pas connecté, le token est absent"})
+    jsonwebtoken.verify(refreshToken, process.env.REFRESH_SECRET, (error, user) => {
+        if(error) return response.sendStatus(403);
+        const newAccessToken = jsonwebtoken.sign({ id: userLoginChecker._id, email: userLoginChecker.email }, process.env.SECRET_KEY, {expiresIn: "15m"})
+        response.json({accessToken: newAccessToken})
+    })
 }
