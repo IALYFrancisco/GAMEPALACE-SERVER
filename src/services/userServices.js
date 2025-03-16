@@ -60,7 +60,7 @@ export async function userLogin (request, response) {
             response.cookie("refreshToken", refreshToken, {
                 httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000
             })
-            response.status(200).json("User exist, he can connect 👍👍")
+            response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: accessToken, user: userLoginChecker})
         }else{
             response.status(204).end()
         }
