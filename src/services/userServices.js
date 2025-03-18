@@ -3,7 +3,7 @@ import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
 
-var tokens = [];
+// var tokens = [];
 var userLoginChecker;
 
 //Service de récupération de la liste de tout les utilisateurs
@@ -58,7 +58,6 @@ export async function userLogin (request, response) {
             const accessToken = jsonwebtoken.sign({ id: userLoginChecker._id, email: userLoginChecker.email }, process.env.SECRET_KEY, {expiresIn: "15m"})
             const refreshToken = jsonwebtoken.sign({id: userLoginChecker._id, email: userLoginChecker.email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
             tokens.push(refreshToken)
-            console.log(tokens)
             response.cookie("refreshToken", refreshToken, {
                 httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000
             })
@@ -67,7 +66,7 @@ export async function userLogin (request, response) {
             response.status(204).end()
         }
     }catch(error){
-        response.status(500).json("Error on the server 💻💻")
+        response.status(500).json(error)
     }finally{
         await dbDisconnexion()
     }
