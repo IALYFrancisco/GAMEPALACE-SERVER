@@ -84,7 +84,7 @@ export async function refreshToken(request, response) {
     if(!_refreshToken || !await RefreshTokens.find({token: _refreshToken})) return response.status(403).json({message: "You are not authorized to refresh your refreshToken."})
     jsonwebtoken.verify(_refreshToken, process.env.REFRESH_SECRET, (error, user) => {
         if(error) return response.sendStatus(403);
-        const newAccessToken = jsonwebtoken.sign({ id: userLoginChecker._id, email: userLoginChecker.email }, process.env.SECRET_KEY, {expiresIn: "15m"})
+        const newAccessToken = jsonwebtoken.sign({ id: user._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
         response.json({accessToken: newAccessToken})
     })
 }
