@@ -80,13 +80,16 @@ export async function userLogin (request, response) {
 
 //Service en charge du rafraîchissement des tokens
 export async function refreshToken(request, response) {
+    await dbConnexion()
     let _refreshToken = request.cookies.refreshToken
-    if(!_refreshToken || !await RefreshTokens.find({token: _refreshToken})) return response.status(403).json({message: "You are not authorized to refresh your refreshToken."})
+    let _ = await RefreshTokens.find({token: _refreshToken})
+    if(!_refreshToken || _.length <= 0) return response.status(403).json({message: "You are not authorized to refresh your refreshToken."})
     jsonwebtoken.verify(_refreshToken, process.env.REFRESH_SECRET, (error, user) => {
         if(error) return response.sendStatus(403);
         const newAccessToken = jsonwebtoken.sign({ id: user._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
         response.json({accessToken: newAccessToken})
     })
+    await dbDisconnexion()
 }
 
 //Service en charge du déconnexion des utilisateurs
