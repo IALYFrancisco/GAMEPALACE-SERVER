@@ -33,7 +33,7 @@ export async function postOneUser(request, response) {
 
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
-        if(userAlreadyExist.length > 0){
+        if(userAlreadyExist){
             response.status(204).end()
         }else{
             request.body.password = await hashUserPassword(request.body.password)
@@ -56,6 +56,7 @@ export async function userLogin (request, response) {
         userLoginChecker = await userCollection.find({email : request.query.email})
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
             let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id, email: userLoginChecker[0].email }, process.env.SECRET_KEY, {expiresIn: "15m"})
+            console.log(_accessToken)
             const refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id, email: userLoginChecker[0].email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
             // tokens.push(refreshToken)
             let addUserAccessToken = await userCollection.findByIdAndUpdate(userLoginChecker[0]._id, {accessToken: _accessToken})
