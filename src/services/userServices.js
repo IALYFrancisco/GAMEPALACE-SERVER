@@ -33,7 +33,7 @@ export async function postOneUser(request, response) {
 
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
-        if(userAlreadyExist){
+        if(userAlreadyExist.length > 0){
             response.status(209).json({
                 message: "User whith this email already exist."
             })
