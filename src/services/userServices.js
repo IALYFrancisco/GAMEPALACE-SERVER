@@ -43,6 +43,8 @@ export async function postOneUser(request, response) {
                 let newUser = userCollection(request.body)
                 await newUser.save()
                 response.status(201).json("User created successfully ✅✅")
+            }else{
+                response.status(400).json({message: "Bad request"})
             }
         }
 
