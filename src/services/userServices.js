@@ -81,7 +81,6 @@ export async function userLogin (request, response) {
 //Service en charge du rafraîchissement des tokens
 export async function refreshToken(request, response) {
     const _refreshToken = request.cookies.refreshToken
-    console.log(tokens)
     if(!_refreshToken || !tokens.includes(_refreshToken)) return response.status(403).json({mesage: "L'utilisateur n'est pas connecté, le token est absent"})
     jsonwebtoken.verify(_refreshToken, process.env.REFRESH_SECRET, (error, user) => {
         if(error) return response.sendStatus(403);
