@@ -60,9 +60,7 @@ export async function userLogin (request, response) {
         userLoginChecker = await userCollection.find({email : request.query.email})
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
             let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id, email: userLoginChecker[0].email }, process.env.SECRET_KEY, {expiresIn: "15m"})
-            console.log(_accessToken)
-            const refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id, email: userLoginChecker[0].email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
-            // tokens.push(refreshToken)
+            let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id, email: userLoginChecker[0].email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
             let addUserAccessToken = await userCollection.findByIdAndUpdate(userLoginChecker[0]._id, {accessToken: _accessToken})
             let currentUser = await userCollection.find({email: userLoginChecker[0].email})
             response.cookie("refreshToken", refreshToken, {
