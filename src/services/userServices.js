@@ -64,11 +64,10 @@ export async function userLogin (request, response) {
             let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id, email: userLoginChecker[0].email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
             let newRefreshToken = RefreshTokens({ token: refreshToken })
             await newRefreshToken.save()
-            let currentUser = await userCollection.find({email: userLoginChecker[0].email})
             response.cookie("refreshToken", refreshToken, {
                 httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000
             })
-            response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: currentUser})
+            response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: userLoginChecker})
         }else{
             response.status(204).end()
         }
