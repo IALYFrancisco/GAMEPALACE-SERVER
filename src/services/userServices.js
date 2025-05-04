@@ -34,12 +34,16 @@ export async function postOneUser(request, response) {
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
         if(userAlreadyExist){
-            response.status(204).end()
+            response.status(209).json({
+                message: "User whith this email already exist."
+            })
         }else{
-            request.body.password = await hashUserPassword(request.body.password)
-            let newUser = userCollection(request.body)
-            await newUser.save()
-            response.status(201).json("User created successfully ✅✅")
+            if(request.body && request.body.password){
+                request.body.password = await hashUserPassword(request.body.password)
+                let newUser = userCollection(request.body)
+                await newUser.save()
+                response.status(201).json("User created successfully ✅✅")
+            }
         }
 
     }catch(error){
