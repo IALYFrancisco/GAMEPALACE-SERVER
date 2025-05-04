@@ -80,8 +80,8 @@ export async function userLogin (request, response) {
 
 //Service en charge du rafraîchissement des tokens
 export async function refreshToken(request, response) {
-    const _refreshToken = request.cookies.refreshToken
-    if(!_refreshToken || !tokens.includes(_refreshToken)) return response.status(403).json({mesage: "L'utilisateur n'est pas connecté, le token est absent"})
+    let _refreshToken = request.cookies.refreshToken
+    if(!_refreshToken || !await RefreshTokens.find({token: _refreshToken})) return response.status(403).json({message: "You are not authorized to refresh your refreshToken."})
     jsonwebtoken.verify(_refreshToken, process.env.REFRESH_SECRET, (error, user) => {
         if(error) return response.sendStatus(403);
         const newAccessToken = jsonwebtoken.sign({ id: userLoginChecker._id, email: userLoginChecker.email }, process.env.SECRET_KEY, {expiresIn: "15m"})
