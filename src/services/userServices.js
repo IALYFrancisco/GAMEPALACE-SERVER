@@ -34,9 +34,7 @@ export async function postOneUser(request, response) {
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
         if(userAlreadyExist.length > 0){
-            response.status(209).json({
-                message: "User whith this email already exist."
-            })
+            response.status(200).json({message:"User with this email already exist."})
         }else{
             if(request.body && request.body.password){
                 request.body.password = await hashUserPassword(request.body.password)
