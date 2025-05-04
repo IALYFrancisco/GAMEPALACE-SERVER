@@ -60,8 +60,8 @@ export async function userLogin (request, response) {
         await dbConnexion()
         userLoginChecker = await userCollection.find({email : request.query.email})
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
-            let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id, email: userLoginChecker[0].email }, process.env.SECRET_KEY, {expiresIn: "15m"})
-            let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id, email: userLoginChecker[0].email}, process.env.REFRESH_SECRET, {expiresIn: "7d"})
+            let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
+            let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id }, process.env.REFRESH_SECRET, {expiresIn: "7d"})
             let newRefreshToken = RefreshTokens({ token: refreshToken })
             await newRefreshToken.save()
             response.cookie("refreshToken", refreshToken, {
