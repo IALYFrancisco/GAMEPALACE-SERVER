@@ -1,7 +1,13 @@
 import { dbConnexion, dbDisconnexion } from "./dbServices.js";
 import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
+import jsonwebtoken from "jsonwebtoken";
+import RefreshTokens from "../models/RefreshTokens.js";
 
+// var tokens = [];
+var userLoginChecker;
+
+//Service de récupération de la liste de tout les utilisateurs
 export async function getAllUser( request, response ){
     
     await dbConnexion()
@@ -19,6 +25,7 @@ export async function getAllUser( request, response ){
     await dbDisconnexion()
 }
 
+//Service en charge de l'inscription des utilisateurs
 export async function postOneUser(request, response) {
     response.set("Content-Type", "application/json")
     try {
@@ -28,12 +35,16 @@ export async function postOneUser(request, response) {
         let userAlreadyExist = await userCollection.find({email : request.body.email})
 
         if(userAlreadyExist.length > 0){
-            response.status(204).end()
+            response.status(200).json({message:"User with this email already exist."})
         }else{
-            request.body.password = await hashUserPassword(request.body.password)
-            let newUser = userCollection(request.body)
-            await newUser.save()
-            response.status(201).json("User created successfully ✅✅")
+            if(request.body && request.body.password){
+                request.body.password = await hashUserPassword(request.body.password)
+                let newUser = userCollection(request.body)
+                await newUser.save()
+                response.status(201).json("User created successfully ✅✅")
+            }else{
+                response.status(400).json({message: "Bad request"})
+            }
         }
 
     }catch(error){
@@ -43,17 +54,54 @@ export async function postOneUser(request, response) {
     }
 }
 
+//Service en charge du connexion des utilisateurs
 export async function userLogin (request, response) {
     try {
         await dbConnexion()
-        let userLoginChecker = await userCollection.find({email : request.query.email})
+        userLoginChecker = await userCollection.find({email : request.query.email})
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
-            response.status(200).json("User exist, he can connect 👍👍")
+            let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
+            let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id }, process.env.REFRESH_SECRET, {expiresIn: "7d"})
+            let newRefreshToken = RefreshTokens({ token: refreshToken })
+            await newRefreshToken.save()
+            response.cookie("refreshToken", refreshToken, {
+                httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000
+            })
+            response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: userLoginChecker})
         }else{
             response.status(204).end()
         }
     }catch(error){
-        response.status(500).json("Error on the server 💻💻")
+        response.status(500).json(error)
+    }finally{
+        await dbDisconnexion()
+    }
+}
+
+//Service en charge du rafraîchissement des tokens
+export async function refreshToken(request, response) {
+    await dbConnexion()
+    let _refreshToken = request.cookies.refreshToken
+    let _ = await RefreshTokens.find({token: _refreshToken})
+    if(!_refreshToken || _.length <= 0) return response.status(403).json({message: "You are not authorized to refresh your refreshToken."})
+    jsonwebtoken.verify(_refreshToken, process.env.REFRESH_SECRET, (error, user) => {
+        if(error) return response.sendStatus(403);
+        const newAccessToken = jsonwebtoken.sign({ id: user._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
+        response.json({accessToken: newAccessToken})
+    })
+    await dbDisconnexion()
+}
+
+//Service en charge du déconnexion des utilisateurs
+export async function logout (request, response){
+    try {
+        await dbConnexion()
+        await RefreshTokens.deleteOne({ token: request.cookies.refreshToken })
+        response.clearCookie("refreshToken");
+        response.status(200).json({message: "User logged out"})
+    }catch(error){
+        console.log(error)
+        response.status(500).json(error)
     }finally{
         await dbDisconnexion()
     }
