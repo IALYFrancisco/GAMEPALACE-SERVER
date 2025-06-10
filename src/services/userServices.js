@@ -62,10 +62,10 @@ export async function userLogin (request, response) {
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
             let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
             let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id }, process.env.REFRESH_SECRET, {expiresIn: "7d"})
-            let newRefreshToken = RefreshTokens({ token: refreshToken })
+            let newRefreshToken = RefreshTokens({ user_id: userLoginChecker[0]._id, token: refreshToken })
             await newRefreshToken.save()
             response.cookie("refreshToken", refreshToken, {
-                httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000
+                httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000, path: '/'
             })
             response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: userLoginChecker})
         }else{
@@ -96,7 +96,6 @@ export async function refreshToken(request, response) {
 export async function logout (request, response){
     try {
         await dbConnexion()
-        console.log(request.cookies.refreshToken)
         await RefreshTokens.deleteOne({ token: request.cookies.refreshToken })
         response.clearCookie("refreshToken");
         response.status(200).json({message: "User logged out"})
