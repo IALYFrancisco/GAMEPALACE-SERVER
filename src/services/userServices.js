@@ -96,7 +96,6 @@ export async function refreshToken(request, response) {
 export async function logout (request, response){
     try {
         await dbConnexion()
-        console.log(request.cookies.refreshToken)
         await RefreshTokens.deleteOne({ token: request.cookies.refreshToken })
         response.clearCookie("refreshToken");
         response.status(200).json({message: "User logged out"})
