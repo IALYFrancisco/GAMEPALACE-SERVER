@@ -1,7 +1,9 @@
 import mongoose from 'mongoose'
 
 const refreshTokensSchema = mongoose.Schema({
-    token: { type: String, required: true }
+    user_id: { type: String, required: true},
+    token: { type: String, required: true },
+    generation_date: { type: Date, required: true, default: Date.now }
 })
 
 const RefreshTokens = new mongoose.model('RefreshTokens', refreshTokensSchema)
