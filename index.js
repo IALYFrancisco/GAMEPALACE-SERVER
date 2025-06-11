@@ -1,18 +1,22 @@
 import e from 'express'
 import dotenv from 'dotenv'
 import userRouter from './src/routes/userRoutes.js'
-import { corsAuthorization } from './src/middlewares/index.js'
 import gameRouter from './src/routes/gameRoutes.js'
 import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
-
 const app = e()
 
 app.use(e.json())
 
-app.use(corsAuthorization)
+app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN)
+    response.setHeader('Access-Control-Allow-Method', '*')
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    response.setHeader('Access-Control-Allow-Credentials', true)
+    next()
+})
 
 app.use(cookieParser())
 
