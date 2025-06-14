@@ -65,7 +65,7 @@ export async function userLogin (request, response) {
             let newRefreshToken = RefreshTokens({ user_id: userLoginChecker[0]._id, token: refreshToken })
             await newRefreshToken.save()
             response.cookie("refreshToken", refreshToken, {
-                httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7 * 24 * 60 * 60 * 1000, path: '/'
+                httpOnly: true, secure: true, sameSite: "None", maxAge: 7 * 24 * 60 * 60 * 1000, path: '/'
             })
             response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: userLoginChecker})
         }else{
@@ -97,7 +97,7 @@ export async function logout (request, response){
     try {
         await dbConnexion()
         await RefreshTokens.deleteOne({ token: request.cookies.refreshToken })
-        response.clearCookie("refreshToken");
+        response.clearCookie('refreshToken', { path: '/' });
         response.status(200).json({message: "User logged out"})
     }catch(error){
         console.log(error)
