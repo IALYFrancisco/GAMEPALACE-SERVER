@@ -3,7 +3,6 @@ import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
 
-// var tokens = [];
 var userLoginChecker;
 
 //Service de récupération de la liste de tout les utilisateurs
