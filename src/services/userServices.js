@@ -91,7 +91,6 @@ export async function refreshToken(request, response) {
     await dbDisconnexion()
 }
 
-//Service en charge du déconnexion des utilisateurs
 export async function Logout (request, response){
     try {
         await dbConnexion()
