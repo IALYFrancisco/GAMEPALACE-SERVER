@@ -3,8 +3,6 @@ import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
 
-var userLoginChecker;
-
 //Service de récupération de la liste de tout les utilisateurs
 export async function getAllUser( request, response ){
     
@@ -55,7 +53,7 @@ export async function postOneUser(request, response) {
 export async function Login (request, response) {
     try {
         await dbConnexion()
-        userLoginChecker = await userCollection.find({email : request.query.email})
+        let userLoginChecker = await userCollection.find({email : request.query.email})
         if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
             let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
             let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id }, process.env.REFRESH_SECRET, {expiresIn: "7d"})
