@@ -4,7 +4,6 @@ import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
 
 export async function Register(request, response) {
-    response.set("Content-Type", "application/json")
     try {
         await dbConnexion()
         let userAlreadyExist = await userCollection.find({email : request.body.email})
