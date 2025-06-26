@@ -2,7 +2,6 @@ import { dbConnexion, dbDisconnexion } from "./dbServices.js";
 import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
-import RefreshTokens from "../models/RefreshTokens.js";
 
 // var tokens = [];
 var userLoginChecker;
@@ -81,7 +80,6 @@ export async function Login (request, response) {
 export async function refreshToken(request, response) {
     await dbConnexion()
     let _refreshToken = request.cookies.refreshToken
-    let _ = await RefreshTokens.find({token: _refreshToken})
     if(!_refreshToken || _.length <= 0) return response.status(403).json({message: "You are not authorized to refresh your refreshToken."})
     jsonwebtoken.verify(_refreshToken, process.env.REFRESH_SECRET, (error, user) => {
         if(error) return response.sendStatus(403);
@@ -94,7 +92,6 @@ export async function refreshToken(request, response) {
 export async function Logout (request, response){
     try {
         await dbConnexion()
-        await RefreshTokens.deleteOne({ token: request.cookies.refreshToken })
         response.clearCookie('refreshToken', { path: '/' });
         response.status(200).json({message: "User logged out"})
     }catch(error){
