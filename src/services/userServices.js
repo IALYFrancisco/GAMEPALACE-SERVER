@@ -54,7 +54,6 @@ export async function postOneUser(request, response) {
     }
 }
 
-//Service en charge du connexion des utilisateurs
 export async function Login (request, response) {
     try {
         await dbConnexion()
