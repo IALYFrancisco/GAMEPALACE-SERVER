@@ -3,8 +3,6 @@ import { getAllUser, Logout, postOneUser, refreshToken, Login } from '../service
 
 const userRouter = e.Router()
 
-userRouter.get('', getAllUser)
-
 userRouter.post('', postOneUser)
 
 userRouter.post('/login', Login)
