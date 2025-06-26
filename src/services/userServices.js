@@ -3,7 +3,7 @@ import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
 
-export async function postOneUser(request, response) {
+export async function Register(request, response) {
     response.set("Content-Type", "application/json")
     try {
         await dbConnexion()
