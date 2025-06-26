@@ -29,15 +29,14 @@ export async function Register(request, response) {
 export async function Login (request, response) {
     try {
         await dbConnexion()
-        let userLoginChecker = await userCollection.find({email : request.query.email})
-        if(userLoginChecker.length == 1 && await userPasswordVerify(request.query.password, userLoginChecker[0].password)){
-            let _accessToken = await jsonwebtoken.sign({ id: userLoginChecker[0]._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
-            let refreshToken = await jsonwebtoken.sign({id: userLoginChecker[0]._id }, process.env.REFRESH_SECRET, {expiresIn: "7d"})
-            await newRefreshToken.save()
+        let user = await userCollection.findOne({email : request.query.email})
+        if(user && await userPasswordVerify(request.query.password, user.password)){
+            let _accessToken = await jsonwebtoken.sign({ id: user._id }, process.env.SECRET_KEY, {expiresIn: "15m"})
+            let refreshToken = await jsonwebtoken.sign({id: user._id }, process.env.REFRESH_SECRET, {expiresIn: "7d"})
             response.cookie("refreshToken", refreshToken, {
                 httpOnly: true, secure: true, sameSite: "None", maxAge: 7 * 24 * 60 * 60 * 1000, path: '/'
             })
-            response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: userLoginChecker})
+            response.status(200).json({message:"User exist, he can connect 👍👍", accessToken: _accessToken, user: user})
         }else{
             response.status(204).end()
         }
