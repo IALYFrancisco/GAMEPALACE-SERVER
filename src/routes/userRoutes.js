@@ -3,7 +3,7 @@ import { Logout, Register, refreshToken, Login } from '../services/userServices.
 
 const userRouter = e.Router()
 
-userRouter.post('', Register)
+userRouter.post('/register', Register)
 
 userRouter.post('/login', Login)
 
