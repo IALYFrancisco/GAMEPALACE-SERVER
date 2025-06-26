@@ -1,5 +1,5 @@
 import e from 'express'
-import { getAllUser, logout, postOneUser, refreshToken, Login } from '../services/userServices.js'
+import { getAllUser, Logout, postOneUser, refreshToken, Login } from '../services/userServices.js'
 
 const userRouter = e.Router()
 
@@ -11,6 +11,6 @@ userRouter.post('/login', Login)
 
 userRouter.post('/refresh-token', refreshToken)
 
-userRouter.post('/logout', logout)
+userRouter.post('/logout', Logout)
 
 export default userRouter

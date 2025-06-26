@@ -92,7 +92,7 @@ export async function refreshToken(request, response) {
 }
 
 //Service en charge du déconnexion des utilisateurs
-export async function logout (request, response){
+export async function Logout (request, response){
     try {
         await dbConnexion()
         await RefreshTokens.deleteOne({ token: request.cookies.refreshToken })
