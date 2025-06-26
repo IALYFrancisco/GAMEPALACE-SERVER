@@ -3,7 +3,6 @@ import userCollection from "../models/userModel.js"
 import { hashUserPassword, userPasswordVerify } from "./othersServices.js";
 import jsonwebtoken from "jsonwebtoken";
 
-//Service de récupération de la liste de tout les utilisateurs
 export async function getAllUser( request, response ){
     
     await dbConnexion()
@@ -21,7 +20,6 @@ export async function getAllUser( request, response ){
     await dbDisconnexion()
 }
 
-//Service en charge de l'inscription des utilisateurs
 export async function postOneUser(request, response) {
     response.set("Content-Type", "application/json")
     try {
@@ -72,7 +70,6 @@ export async function Login (request, response) {
     }
 }
 
-//Service en charge du rafraîchissement des tokens
 export async function refreshToken(request, response) {
     await dbConnexion()
     let _refreshToken = request.cookies.refreshToken
