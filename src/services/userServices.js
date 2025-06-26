@@ -6,8 +6,8 @@ import jsonwebtoken from "jsonwebtoken";
 export async function Register(request, response) {
     try {
         await dbConnexion()
-        let userAlreadyExist = await userCollection.find({email : request.body.email})
-        if(userAlreadyExist.length > 0){
+        let user = await userCollection.findOne({email : request.body.email})
+        if(user){
             response.status(200).json({message:"User with this email already exist."})
         }else{
             if(request.body && request.body.password){
