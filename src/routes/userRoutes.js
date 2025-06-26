@@ -1,5 +1,5 @@
 import e from 'express'
-import { getAllUser, Logout, postOneUser, refreshToken, Login } from '../services/userServices.js'
+import { Logout, postOneUser, refreshToken, Login } from '../services/userServices.js'
 
 const userRouter = e.Router()
 
